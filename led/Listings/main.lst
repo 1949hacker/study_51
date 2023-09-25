@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              09/25/2023 09:05:40 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              09/25/2023 11:55:53 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -9,78 +9,43 @@ COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE 
 line level    source
 
    1          #include <reg52.h>//引入52系列单片机头文件
-   2          
-   3          //位定义，sbit 标识符 = 地址值
-   4          sbit led1=P2^0;
-   5          sbit led2=P2^1;
-   6          sbit led3=P2^2;
-   7          sbit led4=P2^3;
-   8          sbit led5=P2^4;
-   9          sbit led6=P2^5;
-  10          sbit led7=P2^6;
-  11          sbit led8=P2^7;
+   2          #include <intrins.h>//引入intrins内置函数
+   3          
+   4          //延迟函数,单位约10微秒，此处利用的是CPU处理的延时，并不准确
+   5          //11.0952MHz测得执行时间为0.000009771593，约为9.771593微秒
+   6          void delay(unsigned int us)
+   7          {
+   8   1        while(us--);//循环执行，递减
+   9   1      }
+  10          
+  11          
   12          
-  13          //延迟函数,单位约微秒，此处利用的是CPU处理的延时，并不准确
-  14          void delay(int us)
-  15          {
-  16   1        while(us--);//循环执行，递减
-  17   1      }
-  18          
-  19          void main()
-  20          {
-  21   1        while(1)
-  22   1        {
-  23   2          led1=0;//设置低电平点亮LED
-  24   2          delay(10000);//1秒为1000毫秒1000000微秒，此处为0.1秒
-  25   2          led1=1;//设置高电平熄灭LED
-  26   2          delay(10000);
-  27   2          
-  28   2          led2=0;
-  29   2          delay(10000);
-  30   2          led2=1;
-  31   2          delay(10000);
-  32   2          
-  33   2          led3=0;
-  34   2          delay(10000);
-  35   2          led3=1;
-  36   2          delay(10000);
-  37   2          
-  38   2          led4=0;
-  39   2          delay(10000);
-  40   2          led4=1;
-  41   2          delay(10000);
-  42   2          
-  43   2          led5=0;
-  44   2          delay(10000);
-  45   2          led5=1;
-  46   2          delay(10000);
-  47   2          
-  48   2          led6=0;
-  49   2          delay(10000);
-  50   2          led6=1;
-  51   2          delay(10000);
-  52   2          
-  53   2          led7=0;
-  54   2          delay(10000);
-C51 COMPILER V9.60.7.0   MAIN                                                              09/25/2023 09:05:40 PAGE 2   
-
-  55   2          led7=1;
-  56   2          delay(10000);
-  57   2          
-  58   2          led8=0;
-  59   2          delay(10000);
-  60   2          led8=1;
-  61   2          delay(10000);
-  62   2        }
-  63   1      }
+  13          void main()
+  14          {
+  15   1        while(1)
+  16   1        {
+  17   2          int i;
+  18   2          P2 = 0xfe;//二进制11111110，对应LED P2^7到0
+  19   2          for(i=0;i<7;i++)
+  20   2          {
+  21   3            P2 = _crol_(P2,1);//使LED 从11111110左移一位11111101
+  22   3            delay(5000);//1秒为1000毫秒1000000微秒，此处为0.05秒，断点结束时间0.09813911
+  23   3          }
+  24   2          for(i=0;i<7;i++)
+  25   2          {
+  26   3            P2 = _cror_(P2,1);//使LED从上方代码执行后的01111111右移一位变为10111111
+  27   3            delay(5000);
+  28   3          }
+  29   2        }
+  30   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     98    ----
+   CODE SIZE        =    100    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =   ----       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
